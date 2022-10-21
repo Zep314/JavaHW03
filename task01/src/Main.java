@@ -10,8 +10,8 @@ import java.util.logging.Logger;
 
 public class Main {
     // Константы
-    final static int MAX_ARRAY_LENGTH = 4;
-    final static int MAX_ARRAY_NUMBER = 10;
+    final static int MAX_ARRAY_LENGTH = 40;
+    final static int MAX_ARRAY_NUMBER = 100;
     private static final Logger log = Logger.getLogger(Main.class.getName());
 
     public static void main(String[] args) {
@@ -23,12 +23,12 @@ public class Main {
         }
         //log.setLevel(Level.FINE);
         log.info("Начинаем работу, инициализируем массив случайной величины");
-        // int[] testArray = new int[(int) (Math.random() * MAX_ARRAY_LENGTH)];
-        int[] testArray = new int[] {6, 1, 3, 5, 2, 4, 7, 8};
+        int[] testArray = new int[(int) (Math.random() * MAX_ARRAY_LENGTH)];
+//        int[] testArray = new int[] {6, 1, 3, 5, 2, 4, 7, 8};
         log.info("Заполняем массив случайными числами");
-//        for (int i = 0; i < testArray.length; i++) {
-//            testArray[i] = (int) (Math.random() * 2 * MAX_ARRAY_NUMBER) - MAX_ARRAY_NUMBER;
-//        }
+        for (int i = 0; i < testArray.length; i++) {
+            testArray[i] = (int) (Math.random() * 2 * MAX_ARRAY_NUMBER) - MAX_ARRAY_NUMBER;
+        }
         log.info("Исходный массив:");
         log.info(myGetArray(testArray));
 
@@ -40,26 +40,27 @@ public class Main {
     }
 
     public static int [] mergeArray(int[] arrayA, int[] arrayB) {
-
-        int[] arrayC = new int[arrayA.length + arrayB.length];
+        // метод слияния двух массивов. Во время слияния и выполняется сортировка
+        int[] arrayRet = new int[arrayA.length + arrayB.length];
         int positionA = 0, positionB = 0;
 
-        for (int i = 0; i < arrayC.length; i++) {
-            if (positionA == arrayA.length) {
-                arrayC[i] = arrayB[positionB];
+        for (int i = 0; i < arrayRet.length; i++) {
+            // указатели позиций указывают на текущие элементы массивов A и B
+            if (positionA > arrayA.length-1) {
+                arrayRet[i] = arrayB[positionB];
                 positionB++;
-            } else if (positionB == arrayB.length) {
-                arrayC[i] = arrayA[positionA];
+            } else if (positionB > arrayB.length-1) {
+                arrayRet[i] = arrayA[positionA];
                 positionA++;
-            } else if (arrayA[i - positionA] < arrayB[i - positionB]) {
-                arrayC[i] = arrayA[i - positionA];
+            } else if (arrayA[positionA] < arrayB[positionB]) {
+                arrayRet[i] = arrayA[positionA];
                 positionA++;
             } else {
-                arrayC[i] = arrayB[i - positionB];
+                arrayRet[i] = arrayB[positionB];
                 positionB++;
             }
         }
-        return arrayC;
+        return arrayRet;
     }
 
     public static int [] sortArray(int[] arrayA){ // сортировка Массива который передается в функцию
@@ -67,7 +68,7 @@ public class Main {
         if (arrayA == null) {
             return null;
         }
-        // проверяем не 1 ли элемент в массиве?
+        // если один элемент в массиве
         if (arrayA.length < 2) {
             return arrayA; // возврат в рекурсию в строки ниже см комменты.
         }
@@ -79,7 +80,7 @@ public class Main {
         int [] arrayC = new int[arrayA.length - arrayA.length / 2];
         System.arraycopy(arrayA, arrayA.length / 2, arrayC, 0, arrayA.length - arrayA.length / 2);
 
-        // рекурсией закидываем поделенные обе части обратно в наш метод, он будет крутится до тех пор,
+        // рекурсией закидываем поделенные обе части обратно в наш метод, он будет крутиться до тех пор,
         // пока не дойдет до 1 элемента в массиве, после чего вернется в строку и будет искать второй такой же,
         // точнее правую часть от него и опять вернет его назад
         arrayB = sortArray(arrayB); // левая часть возврат из рекурсии строкой return arrayA;
@@ -102,5 +103,14 @@ public class Main {
         ret.append(" ]");
         return ret.toString();
     }
-
 }
+
+/* Вывод программы:
+[2022-10-21 23:09:08] [INFO   ] Начинаем работу, инициализируем массив случайной величины
+[2022-10-21 23:09:08] [INFO   ] Заполняем массив случайными числами
+[2022-10-21 23:09:08] [INFO   ] Исходный массив:
+[2022-10-21 23:09:08] [INFO   ] [ 4, 49, 96, 3, 50, 16, 19, 79, -39, 77, -26, 23, 36, 51, 75, -17, 37, -2, 41, -51, -35, -24, 87, -22, -9, -36, 21, 2, 84 ]
+[2022-10-21 23:09:08] [INFO   ] Массив после сортировки:
+[2022-10-21 23:09:08] [INFO   ] [ -51, -39, -36, -35, -26, -24, -22, -17, -9, -2, 2, 3, 4, 16, 19, 21, 23, 36, 37, 41, 49, 50, 51, 75, 77, 79, 84, 87, 96 ]
+[2022-10-21 23:09:08] [INFO   ] Работа завершена
+ */
